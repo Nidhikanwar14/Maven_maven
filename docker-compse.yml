@@ -1,0 +1,40 @@
+version: "3"
+services:
+  postgres1:
+    image: postgres:11.14-alpine
+    container_name: spring_maven
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: always
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
+
+  pgadmin1:
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres1
+    ports:
+      - "5555:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: neelukanwar@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: Start!23
+    restart: always
+
+  mongo1:
+    container_name: Mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  redis1:
+    depends_on:
+      - mongo1
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
+
+volumes:
+  pg_data:
